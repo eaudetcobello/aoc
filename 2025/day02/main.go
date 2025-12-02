@@ -55,10 +55,16 @@ func Filter[T any](slice []T, predicate func(T) bool) []T {
 }
 
 func IsValid(s string) bool {
-	if len(s)%2 == 0 {
-		mid := len(s) / 2
-		left, right := s[:mid], s[mid:]
-		if strings.EqualFold(left, right) {
+	if len(s) == 1 {
+		return true
+	}
+	for k := 1; k <= len(s)/2; k++ {
+		if len(s)%k != 0 {
+			continue
+		}
+		substr := s[:k]
+		repeated := strings.Repeat(substr, len(s)/k)
+		if repeated == s {
 			return false
 		}
 	}
