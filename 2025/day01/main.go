@@ -8,7 +8,6 @@ import (
 	"strings"
 )
 
-
 func floorDiv100(a int) int {
 	if a >= 0 {
 		return a / 100
@@ -25,7 +24,7 @@ func turnWrap(pos int, n int) (wraps, newPos int) {
 		wraps = floorDiv100(start-1) - floorDiv100(end)
 	} else {
 		wraps = 0
-	}
+	}								 
 	newPos = ((end % 100) + 100) % 100
 	return
 }
@@ -50,7 +49,6 @@ func main() {
 	c, d := turnWrap(50, 1000)
 	fmt.Printf("%d,%d\n", c, d)
 
-
 	pos := 50
 	var landedZeroN int
 	var passedZeroN int
@@ -63,6 +61,5 @@ func main() {
 		passedZeroN += int(math.Abs(float64(a)))
 	}
 
-
-	fmt.Printf("%d,%d\n", landedZeroN + passedZeroN, pos)
+	fmt.Printf("%d,%d\n", landedZeroN+passedZeroN, pos)
 }
