@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/big"
 	"os"
 	"strconv"
 	"strings"
@@ -13,39 +14,37 @@ func main() {
 	s = strings.TrimRight(s, "\r\n")
 	lines := strings.SplitSeq(s, "\n")
 
-	sum := 0
+	sum := big.NewInt(0)
 	for line := range lines {
 		line = strings.TrimRight(line, "\r\n")
 		nums := Map(strings.Split(line, ""), func(s string) int {
 			return Must(strconv.Atoi(s))
 		})
-		sum += Eval(nums)
+		sum.Add(sum, Eval(nums))
 	}
 	fmt.Println(sum)
 }
 
-func Eval(nums []int) int {
+func Eval(nums []int) *big.Int {
 	stack := make([]int, 0, 12)
-	budget := 3
+	budget := len(nums) - 12
 	for _, num := range nums {
-		var x int
 		for len(stack) > 0 && budget > 0 && stack[len(stack)-1] < num {
-			fmt.Printf("%d <= %d", stack[len(stack)-1], num)
-			x, stack = stack[len(stack)-1], stack[:len(stack)-1]
-			fmt.Printf(", pop %d ", x)
-			fmt.Printf("(%v)\n", stack)
+			_, stack = stack[len(stack)-1], stack[:len(stack)-1]
 			budget--
 		}
 		stack = append(stack, num)
-		fmt.Printf("push %d (%v)\n", num, stack)
 	}
 
-	fmt.Printf("final stack %v\n", stack)
+	stack = stack[:len(stack)-budget]
 
-	n := 0
+	n := big.NewInt(0)
+	ten := big.NewInt(10)
 	for _, d := range stack {
-		n = n*10 + d
+		n.Mul(n, ten)
+		n.Add(n, big.NewInt(int64(d)))
 	}
+
 	return n
 }
 
@@ -60,16 +59,6 @@ func Map[T any, E any](slice []T, mapFunc func(T) E) []E {
 	result := make([]E, 0, len(slice))
 	for _, elem := range slice {
 		result = append(result, mapFunc(elem))
-	}
-	return result
-}
-
-func Filter[T any](slice []T, predicate func(T) bool) []T {
-	result := make([]T, 0, len(slice))
-	for _, elem := range slice {
-		if predicate(elem) {
-			result = append(result, elem)
-		}
 	}
 	return result
 }
