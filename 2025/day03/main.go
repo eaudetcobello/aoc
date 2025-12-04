@@ -25,17 +25,28 @@ func main() {
 }
 
 func Eval(nums []int) int {
-	bestTens := 0
-	bestTwoDigit := 0
+	stack := make([]int, 0, 12)
+	budget := 3
 	for _, num := range nums {
-		if (bestTens*10)+num > bestTwoDigit {
-			bestTwoDigit = (bestTens * 10) + num
+		var x int
+		for len(stack) > 0 && budget > 0 && stack[len(stack)-1] < num {
+			fmt.Printf("%d <= %d", stack[len(stack)-1], num)
+			x, stack = stack[len(stack)-1], stack[:len(stack)-1]
+			fmt.Printf(", pop %d ", x)
+			fmt.Printf("(%v)\n", stack)
+			budget--
 		}
-		if num > bestTens {
-			bestTens = num
-		}
+		stack = append(stack, num)
+		fmt.Printf("push %d (%v)\n", num, stack)
 	}
-	return bestTwoDigit
+
+	fmt.Printf("final stack %v\n", stack)
+
+	n := 0
+	for _, d := range stack {
+		n = n*10 + d
+	}
+	return n
 }
 
 func Must[T any](v T, err error) T {
