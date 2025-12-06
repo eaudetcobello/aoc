@@ -41,41 +41,36 @@ func inBounds(grid [][]rune, x, y int) bool {
 }
 
 func Eval(grid [][]rune) int {
-	resultGrid := make([][]int, len(grid)) // for debug printing, can be ignored
-	for i := range resultGrid {
-		resultGrid[i] = make([]int, len(grid[0]))
-	}
-
 	result := 0
-	for y, row := range grid {
-		for x := range row {
-			count := 0
-			if grid[x][y] == '.' {
-				continue
-			}
-			for _, dir := range directions {
-				newY := y + dir.dy
-				newX := x + dir.dx
-				if inBounds(grid, newX, newY) {
-					if grid[newX][newY] == '@' {
-						count++
+
+	for {
+		removedThisPass := 0
+		for y, row := range grid {
+			for x := range row {
+				if grid[y][x] == '.' {
+					continue
+				}
+				count := 0
+				for _, dir := range directions {
+					newY := y + dir.dy
+					newX := x + dir.dx
+					if inBounds(grid, newX, newY) {
+						if grid[newY][newX] == '@' {
+							count++
+						}
 					}
 				}
-			}
 
-			resultGrid[x][y] = count
-
-			if count < 4 {
-				result++
+				if count < 4 {
+					grid[y][x] = '.'
+					removedThisPass++
+				}
 			}
-			count = 0
 		}
-	}
-	for _, row := range resultGrid {
-		for _, col := range row {
-			fmt.Printf("%v", col)
+		result += removedThisPass
+		if removedThisPass == 0 {
+			break
 		}
-		fmt.Println()
 	}
 	return result
 }
