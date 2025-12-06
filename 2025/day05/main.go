@@ -29,7 +29,19 @@ func main() {
 		ingredients[i] = Must(strconv.Atoi(ingredient))
 	}
 
+	// part 1
 	fmt.Println(CountFresh(ingredients, Merge(ranges)))
+
+	// part 2
+	fmt.Println(CountUnique(Merge(ranges)))
+}
+
+func CountUnique(ranges [][]int) int {
+	total := 0
+	for _, r := range ranges {
+		total += r[1] - r[0] + 1
+	}
+	return total
 }
 
 func CountFresh(ingredients []int, ranges [][]int) int {
