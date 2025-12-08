@@ -1,0 +1,11 @@
+# default recipe: list available commands
+default:
+    @just --list
+
+# run a specific day: just day 05
+day DAY:
+    cd day{{DAY}} && go run .
+
+# run today (based on current date in december)
+today:
+    cd day$(date +%d) && go run .
