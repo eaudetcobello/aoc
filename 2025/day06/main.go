@@ -36,39 +36,13 @@ func main() {
 
 func Eval(lines []string) [][]int {
 	maxLen := maxLength(lines)
-
 	paddedLines := pad(lines, maxLen)
-
-	fmt.Println("\npadded lines:")
-	fmt.Printf("%#v", paddedLines)
-
-	fmt.Println()
-	fmt.Println()
-
-	fmt.Println("\ncolumns:")
 	cols := cols(paddedLines)
-	fmt.Printf("%#v", cols)
-
-	fmt.Println()
-	fmt.Println()
-
-	fmt.Println("\ngrouped:")
 	groupedCols := groupCols(cols)
-	fmt.Printf("%#v\n", groupedCols)
-	fmt.Printf("%d", len(groupedCols))
-
-	fmt.Println()
-	fmt.Println()
-
-	fmt.Println("\nparsed:")
 	problems := parseProblems(groupedCols)
-	fmt.Printf("%#v\n", problems)
-
-	fmt.Println()
-	fmt.Println()
-
 	total := calc(problems)
-	fmt.Printf("%d", total)
+
+	fmt.Println(total)
 
 	return nil
 }
@@ -94,7 +68,6 @@ func calc(problems []Problem) int {
 				local += elem
 			}
 		}
-		fmt.Printf("(%v) (%v) %v\n", prob.elems, prob.op, local)
 		acc += local
 	}
 
@@ -112,7 +85,6 @@ func parseProblems(groups [][]string) []Problem {
 // parseProblem parses a group of columns into a
 // Problem struct
 func parseProblem(cols []string) Problem {
-
 	var longestCol int
 	for _, col := range cols {
 		var count int
@@ -126,15 +98,13 @@ func parseProblem(cols []string) Problem {
 		}
 	}
 
-	numbers := make([]int, longestCol)
+	numbers := make([]int, len(cols))
 
-	fmt.Printf("longest col: %d\n", longestCol)
-
-	for i := range longestCol { // rows containing numbers
+	for i := range cols {
 		var number strings.Builder
-		for j := range cols { // numbers in the row
-			if cols[j][i] != ' ' {
-				number.WriteByte(cols[j][i])
+		for j := range longestCol {
+			if cols[i][j] != ' ' {
+				number.WriteByte(cols[i][j])
 			}
 		}
 		numbers[i] = Must(strconv.Atoi(number.String()))
